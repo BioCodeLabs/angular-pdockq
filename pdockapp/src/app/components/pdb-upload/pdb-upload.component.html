@@ -1,0 +1,20 @@
+<p>Do the predicted proteins from the PDB Interact?</p>
+<div class="text-center">
+    <input class="form-control" type="file" 
+            (change)="onChange($event)">
+  
+    <button (click)="onUpload()" 
+        class="btn btn-success">
+        Upload
+    </button>
+</div>
+  
+<!-- Shareable short link of  uploaded file -->
+<div class="container text-center jumbotron"
+    *ngIf="message">
+    {{this.message}}
+</div>
+
+<div class="container" *ngIf="loading">
+    <h3>Loading ...</h3>
+</div>
