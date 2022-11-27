@@ -1,20 +1,66 @@
-<p>Do the predicted proteins from the PDB Interact?</p>
+
+<!--
 <div class="text-center">
     <input class="form-control" type="file" 
             (change)="onChange($event)">
-  
-    <button (click)="onUpload()" 
-        class="btn btn-success">
-        Upload
-    </button>
+-->
+<div class="instructions">
+    pDockQ calculation based on <a href="https://www.nature.com/articles/s41467-022-28865-w"> "Improved prediction of protein-protein interactions using AlphaFold2".</a>
+    <br>
+    You can use <a href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb">ColabFold </a> (<a href="https://www.nature.com/articles/s41592-022-01488-1">"ColabFold: making protein folding accessible to all"</a>) to predict a structure of two protein sequences.
+    <br>
+    Upload a PDB file to calculate pDockQ and distances between interacting residues.
 </div>
-  
-<!-- Shareable short link of  uploaded file -->
-<div class="container text-center jumbotron"
+<div class="buttons">
+    <button class ="upload-button" color="primary" type="button" mat-raised-button (click)="fileInput.click()">Upload PDB</button>
+    <input hidden (change)="onChange($event)" #fileInput type="file">
+    <span class="file-name">{{file.name}}</span>
+</div>
+  <!--
+    <button mat-button color="accent" (click)="onUpload()" 
+        class="btn btn-success">
+        Calculate pDockQ
+    </button>
+-->
+<div class="container" *ngIf="loading">
+    <h3>Processing...</h3>
+</div>
+
+<div class="text-center"
     *ngIf="message">
     {{this.message}}
 </div>
 
-<div class="container" *ngIf="loading">
-    <h3>Loading ...</h3>
-</div>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort >
+  
+    <ng-container matColumnDef="pay_01">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_01">> Residue 1  </th>
+      <td mat-cell *matCellDef="let residues"> {{residues.pay_01}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pay_02">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_02"> Position 1  </th>
+      <td mat-cell *matCellDef="let residues"> {{residues.pay_02}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pay_03">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_03"> Residue 2 </th>
+      <td mat-cell *matCellDef="let residues"> {{residues.pay_03}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pay_04">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_04"> Position 2 </th>
+      <td mat-cell *matCellDef="let residues"> {{residues.pay_04}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pay_05">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_05"> Distance </th>
+        <td mat-cell *matCellDef="let residues"> {{residues.pay_05}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="table_columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: table_columns;"></tr>
+</table>
+
+
+
