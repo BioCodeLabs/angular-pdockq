@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Payload } from 'src/app/interfaces/payload';
@@ -31,8 +33,17 @@ export class PdbUploadComponent implements OnInit {
   ppv="";
   interaction="";
   message="";
+  errorMessage="";
+  error=false;
   loading: boolean = false; 
   file!: File; 
+
+  color: ThemePalette = 'primary';
+  mode: ProgressSpinnerMode = 'indeterminate';
+  value = 50;
+  diameter=40;
+
+
 
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -49,27 +60,34 @@ ngOnInit(): void {
 }
 
 onChange(event:any) {
+  this.error=false;
   this.file = event.target!.files[0];
+  console.log('size', this.file.size);
+   console.log('type', this.file.type);
   this.onUpload();
 }
 
 onUpload(): void {
     this.loading = !this.loading;
+    this.error=false;
+    this.errorMessage=""
     console.log(this.file);
     this.fileUploadService.upload(this.file).subscribe(
         (event: any) => {
             if (typeof (event) === 'object') {
-
-                this.loading = false; // Flag variable 
-                //this.message=event.message;
-                //this.payload=event;
+              
+                if (event.pay_01=="false"){
+                  this.errorReset()
+                  return;
+                }
+                this.errorMessage=""
+                this.error=false;
+                this.loading = false; 
                 this.response=event;
                 this.residues=event;
                 console.log(this.residues);
-                
-                //console.log(event)
+          
                 this.payload=this.residues[this.residues.length-1];
-                //this.payload!=this.residues.pop();
                 console.log(this.payload);
                 this.pdockQ=this.payload.pay_01;
                 this.ppv=this.payload.pay_02;
@@ -89,7 +107,8 @@ onUpload(): void {
                 console.log(this.dataSource);
           
             }
-            
+        }, err =>{
+              this.errorReset();
         }
     );
 }
@@ -115,6 +134,18 @@ payloadToResiduePair(payloadArray:Payload[]){
       this.residuePair.push(residuePairToAdd);
   }
 
+}
+
+isValid(){
+
+}
+errorReset(){
+  this.message="";
+  this.error=true;
+  this.errorMessage="File does not contain only two chains."
+  this.loading=false;
+  this.residues=[]
+  this.dataSource = new MatTableDataSource(this.residues);
 }
 
 

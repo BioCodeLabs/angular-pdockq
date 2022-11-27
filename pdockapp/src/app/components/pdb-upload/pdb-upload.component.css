@@ -21,14 +21,36 @@ table { width: 95%; table-layout: fixed; margin: auto; margin-top: 30px;}
 
 .instructions{
     font-size: 16px;
+    text-align: center;
 
 }
 
 .text-center {
-    text-align: center;
-    display: flex;
-    justify-content: center;
+    
+    /*text-align: center;*/
+    display: inline-block;
+    /*justify-content: center;
     margin:0 auto;
     display:block;
+    margin: 0 auto;*/
+    text-align: center;
+    outline-width: 3px;
+    outline-style: solid;
+    outline-color: #4682b4;
+}
+
+.mat-card{
+    width:20%;
+    min-width: 60px;
+    margin-top: 10px;
+    margin: 0 auto;
+    font-size: large;
+    border-radius: 5px;
+    padding: 5px 0 5px 0;
+    box-sizing: border-box;
+    }
+
+.test{
+    background-color: red;
 }
  
