@@ -50,7 +50,23 @@ table { width: 95%; table-layout: fixed; margin: auto; margin-top: 30px;}
     box-sizing: border-box;
     }
 
-.test{
-    background-color: red;
-}
+    .mat-progress-spinner {
+        justify-content: center;
+        margin-top: 2vh;
+        display: flex;
+        margin:0 auto;
+      }
  
+      input[type="file"]{
+        width:90px; /*reduce input width*/
+        color: transparent /*text will be there but not visible*/
+        }
+
+
+.container{
+    justify-content: center;
+    margin-top: 2vh;
+    display: flex;
+    margin:0 auto;
+
+}
