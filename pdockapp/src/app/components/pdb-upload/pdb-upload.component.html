@@ -4,12 +4,14 @@
     <input class="form-control" type="file" 
             (change)="onChange($event)">
 -->
+
+<div class="body">
 <div class="instructions">
     pDockQ calculation based on <a href="https://www.nature.com/articles/s41467-022-28865-w"> "Improved prediction of protein-protein interactions using AlphaFold2".</a>
     <br>
     You can use <a href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb">ColabFold </a> (<a href="https://www.nature.com/articles/s41592-022-01488-1">"ColabFold: making protein folding accessible to all"</a>) to predict a structure of two protein sequences.
     <br>
-    Upload a PDB file to calculate pDockQ and distances between interacting residues.
+    Upload a PDB file obtained through prediction to calculate pDockQ and distances between interacting residues.
 </div>
 <div class="buttons">
     <button class ="upload-button" color="primary" type="button" mat-raised-button (click)="fileInput.click()">Upload PDB</button>
@@ -43,6 +45,10 @@ class="example-margin"
     <b>Probable interaction?: </b> {{interaction}}
 </mat-card>
 
+
+    <button class ="download-button" mat-button *ngIf="residues.length>0 && message" (click)="downloadResults()">Download Results </button>
+
+
 <mat-card 
     *ngIf="error">
     Error: File does not contain two chains.
@@ -50,6 +56,8 @@ class="example-margin"
 
 
 
+
+<div *ngIf="message">
 
 
 
@@ -66,18 +74,28 @@ class="example-margin"
     </ng-container>
 
     <ng-container matColumnDef="pay_03">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_03"> Residue 2 </th>
-      <td mat-cell *matCellDef="let residues"> {{residues.pay_03}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_03"> Confidence 1 </th>
+      <td mat-cell *matCellDef="let residues"> {{residues.pay_03}}% </td>
     </ng-container>
 
     <ng-container matColumnDef="pay_04">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_04"> Position 2 </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_04"> Residue 2 </th>
       <td mat-cell *matCellDef="let residues"> {{residues.pay_04}} </td>
     </ng-container>
 
     <ng-container matColumnDef="pay_05">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_05"> Distance </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_05"> Position 2 </th>
         <td mat-cell *matCellDef="let residues"> {{residues.pay_05}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pay_06">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_06"> Confidence 2 </th>
+        <td mat-cell *matCellDef="let residues"> {{residues.pay_06}}% </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pay_07">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by pay_07"> Distance </th>
+        <td mat-cell *matCellDef="let residues"> {{residues.pay_07}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="table_columns"></tr>
@@ -86,3 +104,7 @@ class="example-margin"
 
 
 
+</div>
+
+
+</div>

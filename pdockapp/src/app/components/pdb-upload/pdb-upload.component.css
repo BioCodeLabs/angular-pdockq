@@ -70,3 +70,24 @@ table { width: 95%; table-layout: fixed; margin: auto; margin-top: 30px;}
     margin:0 auto;
 
 }
+
+th {
+    color: black;
+    background-color: rgb(247, 247, 247);
+}
+
+.download-button {
+    display: flex;
+    color:white;
+    background-color: #4682b4;
+    cursor: pointer;
+    justify-content: center;
+    margin:0 auto;
+    display:block;
+}
+
+.body{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}

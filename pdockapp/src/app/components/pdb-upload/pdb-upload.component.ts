@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Payload } from 'src/app/interfaces/payload';
 import { ResiduePair } from 'src/app/interfaces/residue_pair';
+import { FileDownloadService } from 'src/app/services/file-download.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 @Component({
   selector: 'app-pdb-upload',
@@ -19,13 +20,18 @@ export class PdbUploadComponent implements OnInit {
   dataSource = new MatTableDataSource<Payload>(this.residues);
   
 
-  table_columns : string[] = ["pay_01","pay_02","pay_03","pay_04","pay_05"];
+  table_columns : string[] = ["pay_01","pay_02","pay_03","pay_04","pay_05","pay_06","pay_07"];
   payload:Payload={
     pay_01: '',
     pay_02: '',
     pay_03: '',
     pay_04: '',
-    pay_05: ''
+    pay_05: '',
+    pay_06: '',
+    pay_07: '',
+    pay_08: '',
+    pay_09: '',
+    pay_10: ''
   };
   residuePair:ResiduePair[]=[]
 
@@ -47,6 +53,7 @@ export class PdbUploadComponent implements OnInit {
 
 
   @ViewChild(MatSort) sort!: MatSort;
+  blob!: Blob;
 
   @ViewChild(MatSort) set matSort(sort: MatSort) {
     this.dataSource.sort = sort;
@@ -54,7 +61,7 @@ export class PdbUploadComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-constructor(private fileUploadService: FileUploadService) { }
+constructor(private fileUploadService: FileUploadService,private fileDownloadService:FileDownloadService) { }
 
 ngOnInit(): void {
 }
@@ -62,8 +69,6 @@ ngOnInit(): void {
 onChange(event:any) {
   this.error=false;
   this.file = event.target!.files[0];
-  console.log('size', this.file.size);
-   console.log('type', this.file.type);
   this.onUpload();
 }
 
@@ -71,6 +76,7 @@ onUpload(): void {
     this.loading = !this.loading;
     this.error=false;
     this.errorMessage=""
+    this.message="";
     console.log(this.file);
     this.fileUploadService.upload(this.file).subscribe(
         (event: any) => {
@@ -85,27 +91,21 @@ onUpload(): void {
                 this.loading = false; 
                 this.response=event;
                 this.residues=event;
-                console.log(this.residues);
-          
+              
                 this.payload=this.residues[this.residues.length-1];
-                console.log(this.payload);
+
                 this.pdockQ=this.payload.pay_01;
                 this.ppv=this.payload.pay_02;
                 this.interaction=this.payload.pay_03;
-
 
                 this.message="pDockQ="+this.pdockQ+"\tppv="+this.ppv+"\tProbable interaction?: "+this.interaction;
 
                 this.residues.pop();
 
-                this.payloadToResiduePair(this.residues);
-                console.log(this.residuePair);
-
                 this.dataSource = new MatTableDataSource(this.residues);
                 this.dataSource.sort = this.sort; 
                 this.dataSource.paginator = this.paginator;
-                console.log(this.dataSource);
-          
+              
             }
         }, err =>{
               this.errorReset();
@@ -113,28 +113,6 @@ onUpload(): void {
     );
 }
 
-
-payloadToResiduePair(payloadArray:Payload[]){
-  let i=0;
-   for( i=0;i<payloadArray.length-1;i++){
-      let res1=payloadArray[i].pay_01;
-      let pos1:number=+payloadArray[i].pay_02;
-      let res2=payloadArray[i].pay_03;
-      let pos2:number=+payloadArray[i].pay_04;
-      let dist:number=+payloadArray[i].pay_05;
-      console.log(res1);
-      
-      let residuePairToAdd:ResiduePair={
-        residue1: res1,
-        position1: pos1,
-        residue2: res2,
-        position2: pos2,
-        distance: dist
-      };
-      this.residuePair.push(residuePairToAdd);
-  }
-
-}
 
 isValid(){
 
@@ -148,5 +126,26 @@ errorReset(){
   this.dataSource = new MatTableDataSource(this.residues);
 }
 
+
+downloadResults(){
+  let payloadArray:Payload[]=[];
+  payloadArray=this.residues;
+
+  this.fileDownloadService.download(payloadArray).subscribe(
+    (res:any)=>{
+      this.blob = new Blob([res], {type: 'text/csv'});
+      let downloadURL = window.URL.createObjectURL(res);
+      let link = document.createElement('a');
+      link.href = downloadURL;
+      let csv_name=this.file.name.split(".")[0]
+      link.download = csv_name+"_pd_"+this.pdockQ+"_"+this.interaction+"_interactions.csv";
+      link.click();
+    },
+    err=>{
+      console.log(err);
+    }
+  )
+
+}
 
 }
